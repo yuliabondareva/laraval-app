@@ -15,8 +15,8 @@ class UsersMessagesTable extends Migration
     {
         Schema::create('users_messages', function (Blueprint $table) {
             $table->id();
-            $table->string('id_sender_letter',10)->nullable(false);
-            $table->string('id_recipient_letter',10)->nullable(false);
+            $table->integer('id_sender_letter');
+            $table->integer('id_recipient_letter');
             $table->text('message');
             $table->timestamps();
         });
