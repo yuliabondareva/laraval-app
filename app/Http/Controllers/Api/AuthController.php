@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use DateTime;
 use Illuminate\Http\Request;
 use App\User;
 use Illuminate\Support\Facades\Hash;
@@ -10,11 +11,6 @@ use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
 {
-//    public function __construct()
-//    {
-//        $this->middleware(['auth', 'verified']);
-//    }
-
     public function register (Request $request) {
 
         $validator = Validator::make($request->all(), [
@@ -30,25 +26,22 @@ class AuthController extends Controller
         }
 
         $request['password']=Hash::make($request['password']);
-        var_dump($request['password']);
-        die;
+        $timeNow = new DateTime('now');
+        $request['email_verified_at']= $timeNow->format('Y-m-d H:i:s');
+
         $user = User::create($request->toArray());
-
-        $token = $user->createToken('Laravel Password Grant Client')->accessToken;
-        $response = ['token' => $token];
-
+        $user->markEmailAsVerified();
+        $response = ['response' => 'You are success register'];
         return response($response, 200);
 
     }
 
     public function login (Request $request) {
-
         $user = User::where('email', $request->email)->first();
 
         if ($user) {
-
             if (Hash::check($request->password, $user->password)) {
-                $token = $user->createToken('Laravel Password Grant Client')->accessToken;
+                $token = $user->generateToken();
                 $response = ['token' => $token];
                 return response($response, 200);
             } else {
@@ -60,7 +53,6 @@ class AuthController extends Controller
             $response = 'User does not exist';
             return response($response, 422);
         }
-
     }
 
     public function logout (Request $request) {
