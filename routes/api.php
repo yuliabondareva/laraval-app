@@ -15,9 +15,10 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::post('/register', 'Api\AuthController@register')->name('register');
-Route::post('/login', 'Api\AuthController@login')->name('login');
-Route::post('/logout', 'Api\AuthController@logout')->name('logout');
+Route::post('/register', 'Auth\RegisterController@register');
+//Route::post('/register', 'Api\AuthController@register')->name('register');
+//Route::post('/login', 'Api\AuthController@login')->name('login');
+//Route::post('/logout', 'Api\AuthController@logout')->name('logout');
 //Auth::routes(['verify' => true]);
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
